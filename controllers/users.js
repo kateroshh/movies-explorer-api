@@ -1,9 +1,11 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const { generateToken } = require('../utils/jwt');
+const { NotFoundError, DuplcateErr, ValidationErr } = require('../errors/errors');
 
 const MONGE_DUPLCATE_ERROR_CODE = 11000;
 const SOLT_ROUND = 10;
+const TOKEN_NAME = 'userToken';
 
 /**
  * Функция возвращает информацию о пользователе (email и имя)
@@ -15,8 +17,26 @@ const getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        next(new Error('Такой пользователь уже существует'));
-        // throw new Error('Пользователь не найден');
+        next(new NotFoundError('Пользователь не найден'));
+      }
+      res.send(user);
+    })
+    .catch(next);
+};
+
+/**
+ * Функция обновляет информацию о пользователе (email и имя)
+ * @param {*} req - объект запроса использует req.user._id, req.body.name, req.body.email
+ * @param {*} res - ответ запроса отправляем информацию об обновленном пользователе
+ * @param {*} next - аргумент обратного вызова для функции промежуточного обработчика
+ */
+const updateUser = (req, res, next) => {
+  const { name, email } = req.body;
+
+  User.findByIdAndUpdate(req.user._id, { name, email }, { new: true, runValidators: true })
+    .then((user) => {
+      if (!user) {
+        next(new NotFoundError('Пользователь не найден'));
       }
       res.send(user);
     })
@@ -47,7 +67,7 @@ const createUser = async (req, res, next) => {
     })
     .catch((error) => {
       if (error.code === MONGE_DUPLCATE_ERROR_CODE) {
-        next(new Error('Такой пользователь уже существует'));
+        next(new DuplcateErr('Такой пользователь уже существует'));
       }
 
       next(error);
@@ -68,14 +88,13 @@ const login = async (req, res, next) => {
     const matched = await bcrypt.compare(String(password), user.password);
 
     if (!matched) {
-      // next(new ValidationErr('Не правильный email или пароль'));
-      next(new Error('Не правильный email или пароль'));
+      next(new ValidationErr('Не правильный email или пароль'));
     }
 
     // Создает токен пользователя и записывает его в cookie с названием userToken
     const token = generateToken({ _id: user._id, email: user.email });
 
-    res.cookie('userToken', token, {
+    res.cookie(TOKEN_NAME, token, {
       maxAge: 3600000,
       httpOnly: true,
       sameSite: 'none',
@@ -89,8 +108,25 @@ const login = async (req, res, next) => {
   return null;
 };
 
+/**
+ * Функция выхода из системы
+ * @param {*} req - объект запроса
+ * @param {*} res - ответ запроса устанавливаем значение maxAge: -1 у cookie
+ * @param {*} next - аргумент обратного вызова для функции промежуточного обработчика
+ */
+const signout = async (req, res, next) => {
+  try {
+    res.clearCookie(TOKEN_NAME);
+    res.end();
+  } catch (error) {
+    next(new Error('Ошибка выхода из системы'));
+  }
+};
+
 module.exports = {
   getUser,
   createUser,
   login,
+  updateUser,
+  signout,
 };
