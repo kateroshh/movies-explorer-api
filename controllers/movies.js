@@ -23,8 +23,8 @@ const getMovies = async (req, res, next) => {
  * @param {*} next - аргумент обратного вызова для функции промежуточного обработчика
  */
 const saveMovie = async (req, res, next) => {
-  const { country, director, duration, year, description, image, trailerLink, thumbnail, movieId, nameRU, nameEN } =
-    req.body;
+  const { country, director, duration, year, description, image } = req.body;
+  const { trailerLink, thumbnail, movieId, nameRU, nameEN } = req.body;
   const owner = req.user._id;
 
   Movie({

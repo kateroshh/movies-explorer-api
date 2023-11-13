@@ -4,13 +4,13 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 
-const { UserRouter } = require('./routes/users');
-const { MovieRouter } = require('./routes/movies');
+const { UserRouter, MovieRouter } = require('./routes/index');
 const auth = require('./middlewares/auth');
 const { createUser, login, signout } = require('./controllers/users');
 const { validateNewUser, validateLogin } = require('./validators/user-validator');
 const errorHandler = require('./middlewares/error-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { limiter } = require('./middlewares/rate-limit');
 
 const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/bitfilmsdb' } = process.env;
 
@@ -34,6 +34,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(requestLogger); // логгер запросов
+
+app.use(limiter);
 
 app.post('/signin', validateLogin, login);
 app.post('/signup', validateNewUser, createUser);
