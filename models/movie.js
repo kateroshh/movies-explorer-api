@@ -6,14 +6,10 @@ const movieSchema = new mongoose.Schema(
     country: {
       type: String,
       required: true,
-      minlength: [2, 'Минимальная длинна 2 символа'],
-      maxlength: [255, 'Максимальная длинна 255 символов'],
     },
     director: {
       type: String,
       required: true,
-      minlength: [2, 'Минимальная длинна 2 символа'],
-      maxlength: [255, 'Максимальная длинна 255 символов'],
     },
     duration: {
       type: Number,
@@ -22,14 +18,10 @@ const movieSchema = new mongoose.Schema(
     year: {
       type: String,
       required: true,
-      minlength: [2, 'Минимальная длинна 2 символа'],
-      maxlength: [4, 'Максимальная длинна 4 символов'],
     },
     description: {
       type: String,
       required: true,
-      minlength: [2, 'Минимальная длинна 2 символа'],
-      maxlength: [255, 'Максимальная длинна 255 символов'],
     },
     image: {
       type: String,
@@ -72,14 +64,10 @@ const movieSchema = new mongoose.Schema(
     nameRU: {
       type: String,
       required: true,
-      minlength: [2, 'Минимальная длинна 2 символа'],
-      maxlength: [255, 'Максимальная длинна 255 символов'],
     },
     nameEN: {
       type: String,
       required: true,
-      minlength: [2, 'Минимальная длинна 2 символа'],
-      maxlength: [255, 'Максимальная длинна 255 символов'],
     },
   },
   { versionKey: false, timestamps: true },

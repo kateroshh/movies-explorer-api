@@ -1,21 +1,11 @@
-// # возвращает все сохранённые текущим пользователем фильмы
-// GET /movies
-
-// # создаёт фильм с переданными в теле
-// # country, director, duration, year, description, image, trailer, nameRU, nameEN и thumbnail, movieId
-// POST /movies
-
-// # удаляет сохранённый фильм по id
-// DELETE /movies/_id
-
 const express = require('express');
-const { getMovies, saveMovie } = require('../controllers/movies');
-// const { validateProfile } = require('../validators/user-validator');
+const { getMovies, saveMovie, deleteMovie } = require('../controllers/movies');
+const { validateMovieId, validateNewMovie } = require('../validators/movie-validator');
 
 const MovieRouter = express.Router();
 
 MovieRouter.get('/movies', getMovies);
-MovieRouter.post('/movies', saveMovie);
-MovieRouter.delete('/movies/_id', getMovies);
+MovieRouter.post('/movies', validateNewMovie, saveMovie);
+MovieRouter.delete('/movies/:_id', validateMovieId, deleteMovie);
 
 module.exports = { MovieRouter };

@@ -1,7 +1,7 @@
 const Movie = require('../models/movie');
-const { NotFoundError, DuplcateErr } = require('../errors/errors');
-
-const MONGE_DUPLCATE_ERROR_CODE = 11000;
+const { NotFoundError, DuplcateErr, NoRights, ValidationErr } = require('../errors/errors');
+const { DUBLCATE_ERROR_TEXT, NOT_FOUND_MOVIE_ERROR_TEXT, NO_RIGHT_TEXT } = require('../constants');
+const { MONGE_DUPLCATE_ERROR_CODE } = require('../constants');
 
 /**
  * Функция возвращает все сохранённые текущим пользователем фильмы
@@ -45,10 +45,18 @@ const saveMovie = async (req, res, next) => {
     .then((newMovie) => res.status(201).send(newMovie))
     .catch((error) => {
       if (error.code === MONGE_DUPLCATE_ERROR_CODE) {
-        next(new DuplcateErr('Такой фильм уже есть в избранном'));
+        next(new DuplcateErr(DUBLCATE_ERROR_TEXT));
+      } else if (error.name === 'ValidationError') {
+        next(
+          new ValidationErr(
+            `${Object.values(error.errors)
+              .map((err) => err.message)
+              .join(', ')}`,
+          ),
+        );
+      } else {
+        next(error);
       }
-
-      next(error);
     });
 };
 
@@ -59,13 +67,22 @@ const saveMovie = async (req, res, next) => {
  * @param {*} next - аргумент обратного вызова для функции промежуточного обработчика
  */
 const deleteMovie = (req, res, next) => {
-  Movie.findByIdAndRemove(req.params.id)
+  Movie.findById(req.params._id)
     .then((movie) => {
       if (!movie) {
-        next(new NotFoundError('Фильм по указанному _id не найден'));
+        next(new NotFoundError(NOT_FOUND_MOVIE_ERROR_TEXT));
       }
 
-      return res.send(card);
+      if (movie.owner && String(movie.owner) !== req.user._id) {
+        throw new NoRights(NO_RIGHT_TEXT);
+      }
+
+      movie
+        .deleteOne()
+        .then((movieDeleted) => {
+          res.send(movieDeleted);
+        })
+        .catch(next);
     })
     .catch(next);
 };

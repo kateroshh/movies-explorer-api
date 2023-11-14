@@ -3,18 +3,23 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
+const helmet = require('helmet');
+require('dotenv').config();
 
 const { UserRouter, MovieRouter } = require('./routes/index');
 const auth = require('./middlewares/auth');
-const { createUser, login, signout } = require('./controllers/users');
+const { createUser, login, signout } = require('./controllers/authorization');
 const { validateNewUser, validateLogin } = require('./validators/user-validator');
 const errorHandler = require('./middlewares/error-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { limiter } = require('./middlewares/rate-limit');
+const { Err404 } = require('./errors/errors');
+const { MONGODB_URL_DEV, PORT_DEV } = require('./constants');
 
-const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/bitfilmsdb' } = process.env;
+const { PORT = PORT_DEV, MONGO_URL = MONGODB_URL_DEV } = process.env;
 
 const app = express();
+app.use(helmet());
 
 app.use(
   cors({
@@ -46,10 +51,8 @@ app.use(auth);
 app.use(UserRouter);
 app.use(MovieRouter);
 
-app.use((req, res) => {
-  res.status(404).json({
-    message: 'Страница не найдена',
-  });
+app.use((req, res, next) => {
+  next(new Err404('Страница не найдена'));
 });
 
 app.use(errorLogger); // логгер ошибок

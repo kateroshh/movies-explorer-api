@@ -15,12 +15,7 @@
   ],
   "rules": {
     "prettier/prettier": "error",
-    "object-curly-newline": "off",
-    "operator-linebreak": ["error", "none"],
     "max-len": ["error", { "ignoreComments": true, "code": 120 }],
-    "no-undef": "off",
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": false, "peerDependencies": true}],
-    // "linebreak-style": "off",
     "no-underscore-dangle": [
       "error",
       {

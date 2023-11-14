@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { NotAutanticate } = require('../errors/errors');
+const { NOT_AUTANTICATE_ERROR_TEXT, TOKEN_ERROR_TEXT, INCORRECT_DATA_ERROR_TEXT } = require('../constants');
 
 const { JWT_SECRET, NODE_ENV } = process.env;
 
@@ -18,17 +19,17 @@ const auth = (req, res, next) => {
     const token = req.cookies.userToken;
 
     if (!token) {
-      return next(new NotAutanticate('Необходима авторизация'));
+      return next(new NotAutanticate(NOT_AUTANTICATE_ERROR_TEXT));
     }
 
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
   } catch (error) {
     if (error.message === 'NotAutanticate') {
-      return next(new NotAutanticate('Не правильный email или пароль'));
+      return next(new NotAutanticate(INCORRECT_DATA_ERROR_TEXT));
     }
 
     if (error.name === 'JsonWebTokenError') {
-      return next(new NotAutanticate('Токен некорректный'));
+      return next(new NotAutanticate(TOKEN_ERROR_TEXT));
     }
 
     return next(error);
