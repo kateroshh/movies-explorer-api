@@ -14,8 +14,8 @@
     "prettier"
   ],
   "rules": {
-    "prettier/prettier": "error",
-    "max-len": ["error", { "ignoreComments": true, "code": 120 }],
+    // "prettier/prettier": "error",
+    // "max-len": ["error", { "ignoreComments": true, "code": 120 }],
     "no-underscore-dangle": [
       "error",
       {
@@ -24,9 +24,9 @@
         ]
       }
     ]
-  },
-  "ignorePatterns": [
-    "src/**/*.test.ts",
-    "src/frontend/generated/*"
-  ]
+  }
+  // "ignorePatterns": [
+  //   "src/**/*.test.ts",
+  //   "src/frontend/generated/*"
+  // ]
 }

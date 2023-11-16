@@ -12,6 +12,7 @@ module.exports = {
       country: Joi.string().required(),
       director: Joi.string().required(),
       duration: Joi.number().required(),
+      description: Joi.string().required(),
       year: Joi.string().required(),
       image: Joi.string()
         .required()
@@ -22,7 +23,6 @@ module.exports = {
       thumbnail: Joi.string()
         .required()
         .regex(/(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/),
-      owner: Joi.objectId().required(),
       movieId: Joi.number().required(),
       nameRU: Joi.string().required(),
       nameEN: Joi.string().required(),

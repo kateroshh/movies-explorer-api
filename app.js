@@ -6,14 +6,12 @@ const { errors } = require('celebrate');
 const helmet = require('helmet');
 require('dotenv').config();
 
-const { UserRouter, MovieRouter } = require('./routes/index');
+const { UserRouter, MovieRouter, AuthRouter } = require('./routes/index');
 const auth = require('./middlewares/auth');
-const { createUser, login, signout } = require('./controllers/authorization');
-const { validateNewUser, validateLogin } = require('./validators/user-validator');
 const errorHandler = require('./middlewares/error-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { limiter } = require('./middlewares/rate-limit');
-const { Err404 } = require('./errors/errors');
+const { NotFoundError } = require('./errors/errors');
 const { MONGODB_URL_DEV, PORT_DEV } = require('./constants');
 
 const { PORT = PORT_DEV, MONGO_URL = MONGODB_URL_DEV } = process.env;
@@ -42,9 +40,7 @@ app.use(requestLogger); // логгер запросов
 
 app.use(limiter);
 
-app.post('/signin', validateLogin, login);
-app.post('/signup', validateNewUser, createUser);
-app.post('/signout', signout);
+app.use(AuthRouter);
 
 app.use(auth);
 
@@ -52,7 +48,7 @@ app.use(UserRouter);
 app.use(MovieRouter);
 
 app.use((req, res, next) => {
-  next(new Err404('Страница не найдена'));
+  next(new NotFoundError('Страница не найдена'));
 });
 
 app.use(errorLogger); // логгер ошибок

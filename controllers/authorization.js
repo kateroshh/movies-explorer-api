@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const { generateToken } = require('../utils/jwt');
-const { DuplcateErr, AuthErr, ValidationErr, ExitErr } = require('../errors/errors');
+const { DuplcateErr, AuthErr, ValidationErr } = require('../errors/errors');
 
 const { DUBLCATE_ERROR_TEXT, AUTH_ERROR_TEXT, EXIT_ERROR_TEXT } = require('../constants');
 const { MONGE_DUPLCATE_ERROR_CODE, SOLT_ROUND, TOKEN_NAME } = require('../constants');
@@ -55,7 +55,11 @@ const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email }).select('+password').orFail(next);
+    const user = await User.findOne({ email })
+      .select('+password')
+      .orFail(() => {
+        throw new AuthErr(AUTH_ERROR_TEXT);
+      });
     const matched = await bcrypt.compare(String(password), user.password);
 
     if (!matched) {
@@ -90,7 +94,7 @@ const signout = async (req, res, next) => {
     res.clearCookie(TOKEN_NAME);
     res.end();
   } catch (error) {
-    next(new ExitErr(EXIT_ERROR_TEXT));
+    next(new ValidationErr(EXIT_ERROR_TEXT));
   }
 };
 
