@@ -1,0 +1,39 @@
+{
+  "name": "movies-explorer-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "lint": "eslint \"**/*.js\" --ignore-pattern node_modules/",
+    "dev": "nodemon --experimental-modules --es-module-specifier-resolution=node --trace-warnings --inspect -- app.js"
+  },
+  "author": "Kate Roshchupkuna",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.22.15",
+    "eslint": "^8.53.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "jsdoc": "^4.0.2",
+    "nodemon": "^3.0.1"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "celebrate": "^15.0.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.4",
+    "express-winston": "^4.2.0",
+    "helmet": "^7.1.0",
+    "joi-objectid": "^4.0.2",
+    "mongoose": "^8.0.0",
+    "winston": "^3.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "validator": "^13.11.0"
+  }
+}

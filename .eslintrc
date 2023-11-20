@@ -1,0 +1,32 @@
+{
+  "root": true,
+  "extends": ["airbnb-base", "prettier"],
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "requireConfigFile": false,
+    "sourceType": "module",
+    "babelOptions": {
+      "babelrc": false,
+      "configFile": false
+    }
+  },
+  "plugins": [
+    "prettier"
+  ],
+  "rules": {
+    // "prettier/prettier": "error",
+    // "max-len": ["error", { "ignoreComments": true, "code": 120 }],
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allow": [
+          "_id"
+        ]
+      }
+    ]
+  }
+  // "ignorePatterns": [
+  //   "src/**/*.test.ts",
+  //   "src/frontend/generated/*"
+  // ]
+}
