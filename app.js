@@ -27,7 +27,7 @@ app.use(
       'http://kateroshh.nomoredomainsrocks.ru',
     ],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
+    // credentials: true,
   }),
 );
 
